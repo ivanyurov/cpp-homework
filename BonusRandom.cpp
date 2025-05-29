@@ -5,11 +5,6 @@
 
 BonusRandom::BonusRandom(float x, float y) : Bonus(x, y, 30.f, 15.f, sf::Color(0, 200, 100)) {}
 
-void BonusRandom::onTouch(Object &other)
-{
-    applyEffect(other);
-}
-
 void BonusRandom::applyEffect(Object &obj)
 {
     Ball *ball = dynamic_cast<Ball *>(&obj);

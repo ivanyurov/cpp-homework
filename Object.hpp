@@ -9,7 +9,6 @@ public:
     bool destroyed = false;
 
     Object(float x, float y, float width, float height, sf::Color color);
-    virtual ~Object() = default;
 
     sf::FloatRect getBounds() const;
     sf::Vector2f getPosition() const;

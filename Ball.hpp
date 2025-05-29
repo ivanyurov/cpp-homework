@@ -10,7 +10,7 @@ public:
     bool toSave = 0;    // for BonusSave
     float randomTime = -1.f;    // for BonusRandom
     sf::CircleShape circleShape;
-    sf::Vector2f velocity;
+    sf::Vector2f velocity = {0.f, 0.f};
 
     Ball(float x, float y, float radius, sf::Color color);
 

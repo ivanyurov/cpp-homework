@@ -5,11 +5,6 @@
 BonusSpeed::BonusSpeed(float x, float y)
     : Bonus(x, y, 30.f, 15.f, sf::Color::Blue) {}
 
-void BonusSpeed::onTouch(Object &other)
-{
-    applyEffect(other);
-}
-
 void BonusSpeed::applyEffect(Object &obj)
 {
     Ball *ball = dynamic_cast<Ball *>(&obj);

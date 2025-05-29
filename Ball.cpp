@@ -6,7 +6,7 @@
 Ball::Ball(float x, float y, float radius, sf::Color color)
     : Object(x, y, radius * 2, radius * 2, color)
 {
-    velocity = {0.f, 0.f};
+    // velocity = {0.f, 0.f};
     circleShape.setPosition(x, y);
     circleShape.setRadius(radius);
     circleShape.setFillColor(color);
@@ -16,7 +16,7 @@ Ball::Ball(float x, float y, float radius, sf::Color color)
     shape.setSize(sf::Vector2f(radius * 2, radius * 2));
 }
 
-void Ball::stick(const Paddle &paddle)  //sticks to paddle
+void Ball::stick(const Paddle &paddle) // sticks to paddle
 {
     this->velocity = {0.f, 0.f};
     float paddleCenterX = paddle.getPosition().x + paddle.getSize().x / 2.f;
@@ -27,7 +27,7 @@ void Ball::stick(const Paddle &paddle)  //sticks to paddle
 
 void Ball::increaseSpeed(float factor)
 {
-    velocity *= factor;
+    this->velocity *= factor;
 }
 
 void Ball::onTouch(Object &other)
@@ -67,7 +67,7 @@ void Ball::onTouch(Object &other)
         setPosition(getPosition().x, newY);
     }
 
-    if (dynamic_cast<Paddle *>(&other) && this->toStick)    //for BonusStick
+    if (dynamic_cast<Paddle *>(&other) && this->toStick) // for BonusStick
     {
         this->toStick = 0;
         stick(*dynamic_cast<Paddle *>(&other));
@@ -95,5 +95,5 @@ void Ball::draw(sf::RenderWindow &window) const
 
 sf::FloatRect Ball::getBounds() const
 {
-    return circleShape.getGlobalBounds();
+    return shape.getGlobalBounds();
 }

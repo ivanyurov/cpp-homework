@@ -3,11 +3,6 @@
 
 BonusSave::BonusSave(float x, float y) : Bonus(x, y, 30.f, 15.f, sf::Color(150, 0, 100)) {}
 
-void BonusSave::onTouch(Object &other)
-{
-    applyEffect(other);
-}
-
 void BonusSave::applyEffect(Object &obj)
 {
     Ball *ball = dynamic_cast<Ball *>(&obj);

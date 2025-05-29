@@ -7,6 +7,5 @@ class BonusStick : public Bonus // next collision betwen ball and paddle leads t
 public:
     BonusStick(float x, float y);
 
-    void onTouch(Object &other) override;
     void applyEffect(Object &obj) override;
 };

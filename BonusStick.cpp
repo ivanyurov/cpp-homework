@@ -5,11 +5,6 @@
 BonusStick::BonusStick(float x, float y)
     : Bonus(x, y, 30.f, 15.f, sf::Color(100, 100, 100)) {}
 
-void BonusStick::onTouch(Object &other)
-{
-    applyEffect(other);
-}
-
 void BonusStick::applyEffect(Object &obj)
 {
     Ball *ball = dynamic_cast<Ball *>(&obj);

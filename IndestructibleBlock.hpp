@@ -7,5 +7,5 @@ class IndestructibleBlock : public Block
 public:
     IndestructibleBlock(float x, float y, float width, float height);
 
-    void onTouch(Object &other) override; // Переопределяем, чтобы ничего не делать
+    void onTouch(Object &other) override; // does nothing
 };
