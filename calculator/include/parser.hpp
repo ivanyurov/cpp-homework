@@ -11,7 +11,8 @@ namespace calc
         Operator,
         Function,
         LParen,
-        RParen
+        RParen,
+        Comma
     };
 
     struct Token

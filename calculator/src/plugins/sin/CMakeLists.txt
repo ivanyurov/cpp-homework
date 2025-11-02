@@ -1,6 +1,6 @@
 add_library(sin_plugin SHARED sin_plugin.cpp)
 
-target_include_directories(sin_plugin PRIVATE ${CMAKE_SOURCE_DIR}/src/api)
+target_include_directories(sin_plugin PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
 set_target_properties(sin_plugin PROPERTIES
     DEFINE_SYMBOL BUILDING_PLUGIN_DLL

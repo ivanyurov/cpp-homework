@@ -21,43 +21,57 @@ bool Evaluator::Evaluate(const std::vector<calc::Token> &rpn, double &result, st
         }
         else if (tok.type == calc::TokenType::Operator)
         {
-            if (st.size() < 2)
+            if (tok.text == "u-")
             {
-                errorMsg = "Invalid expression";
-                return false;
-            }
-            double b = st.top();
-            st.pop();
-            double a = st.top();
-            st.pop();
-            double res = 0;
-
-            if (tok.text == "+")
-                res = a + b;
-            else if (tok.text == "-")
-                res = a - b;
-            else if (tok.text == "*")
-                res = a * b;
-            else if (tok.text == "/")
-            {
-                if (b == 0)
+                if (st.empty())
                 {
-                    errorMsg = "Division by zero";
+                    errorMsg = "Invalid expression (unary -)";
                     return false;
                 }
-                res = a / b;
-            }
-            else if (tok.text == "^")
-            {
-                res = std::pow(a, b);
+                double a = st.top();
+                st.pop();
+                st.push(-a);
             }
             else
             {
-                errorMsg = "Unknown operator: " + tok.text;
-                return false;
-            }
+                if (st.size() < 2)
+                {
+                    errorMsg = "Invalid expression";
+                    return false;
+                }
+                double b = st.top();
+                st.pop();
+                double a = st.top();
+                st.pop();
+                double res = 0;
 
-            st.push(res);
+                if (tok.text == "+")
+                    res = a + b;
+                else if (tok.text == "-")
+                    res = a - b;
+                else if (tok.text == "*")
+                    res = a * b;
+                else if (tok.text == "/")
+                {
+                    if (b == 0)
+                    {
+                        errorMsg = "Division by zero";
+                        return false;
+                    }
+                    res = a / b;
+                }
+                else if (tok.text == "^")
+                {
+                    res = std::pow(a, b);
+                }
+                else
+                {
+                    errorMsg = "Unknown operator: " + tok.text;
+                    return false;
+                }
+
+                st.push(res);
+            }
         }
         else if (tok.type == calc::TokenType::Function)
         {

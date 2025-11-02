@@ -38,17 +38,41 @@ std::vector<calc::Token> calc::Parser::Tokenize(const std::string &expr)
             switch (c)
             {
             case '+':
-            case '-':
             case '*':
             case '/':
             case '^':
                 tokens.push_back({calc::TokenType::Operator, std::string(1, c)});
                 break;
+            case '-':
+            {
+                if (tokens.empty())
+                {
+                    tokens.push_back({calc::TokenType::Operator, std::string("u-")});
+                    break;
+                }
+                else
+                {
+                    calc::TokenType prev = tokens.back().type;
+                    if (prev == calc::TokenType::Operator || prev == calc::TokenType::LParen || prev == calc::TokenType::Comma)
+                    {
+                        tokens.push_back({calc::TokenType::Operator, std::string("u-")});
+                        break;
+                    }
+                    else
+                    {
+                        tokens.push_back({calc::TokenType::Operator, std::string("-")});
+                        break;
+                    }
+                }
+            }
             case '(':
                 tokens.push_back({calc::TokenType::LParen, "("});
                 break;
             case ')':
                 tokens.push_back({calc::TokenType::RParen, ")"});
+                break;
+            case ',':
+                tokens.push_back({calc::TokenType::Comma, ","});
                 break;
             default:
                 std::cerr << "Unknown character: " << c << "\n";
@@ -60,14 +84,25 @@ std::vector<calc::Token> calc::Parser::Tokenize(const std::string &expr)
     return tokens;
 }
 
+static bool is_right_sided(const std::string &op)
+{
+    if (op == "^")
+        return true;
+    if (op == "u-")
+        return true;
+    return false;
+}
+
 static int precedence(const std::string &op)
 {
     if (op == "+" || op == "-")
         return 1;
     if (op == "*" || op == "/")
         return 2;
-    if (op == "^")
+    if (op == "u-")
         return 3;
+    if (op == "^")
+        return 4;
     return 0;
 }
 
@@ -90,13 +125,31 @@ std::vector<calc::Token> calc::Parser::ToRPN(const std::vector<Token> &tokens)
             break;
 
         case calc::TokenType::Operator:
-            while (!ops.empty() && ops.top().type == calc::TokenType::Operator &&
-                   precedence(ops.top().text) >= precedence(tok.text))
+            while (!ops.empty() && ops.top().type == TokenType::Operator)
+            {
+                const std::string &topOp = ops.top().text;
+                int pTop = precedence(topOp);
+                int pCurr = precedence(tok.text);
+
+                if ((!is_right_sided(tok.text) && pTop >= pCurr) || (is_right_sided(tok.text) && pTop > pCurr))
+                {
+                    output.push_back(ops.top());
+                    ops.pop();
+                }
+                else
+                {
+                    break;
+                }
+            }
+            ops.push(tok);
+            break;
+
+        case calc::TokenType::Comma:
+            while (!ops.empty() && ops.top().type != calc::TokenType::LParen)
             {
                 output.push_back(ops.top());
                 ops.pop();
             }
-            ops.push(tok);
             break;
 
         case calc::TokenType::LParen:
