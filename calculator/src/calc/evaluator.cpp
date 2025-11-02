@@ -3,50 +3,103 @@
 #include <cmath>
 #include <iostream>
 
-double Evaluator::Evaluate(const std::vector<Token>& rpn) {
+Evaluator::Evaluator(const std::vector<FunctionDescriptor> &f)
+{
+    for (auto &fn : f)
+        funcs[fn.name] = fn;
+}
+
+bool Evaluator::Evaluate(const std::vector<calc::Token> &rpn, double &result, std::string &errorMsg)
+{
     std::stack<double> st;
 
-    for (const auto& tok : rpn) {
-        if (tok.type == TokenType::Number) {
+    for (auto &tok : rpn)
+    {
+        if (tok.type == calc::TokenType::Number)
+        {
             st.push(tok.value);
         }
-        else if (tok.type == TokenType::Operator) {
-            if (st.size() < 2) {
-                std::cerr << "Error: not enough operands for operator " << tok.text << "\n";
-                return 0;
+        else if (tok.type == calc::TokenType::Operator)
+        {
+            if (st.size() < 2)
+            {
+                errorMsg = "Invalid expression";
+                return false;
             }
+            double b = st.top();
+            st.pop();
+            double a = st.top();
+            st.pop();
+            double res = 0;
 
-            double b = st.top(); st.pop();
-            double a = st.top(); st.pop();
-
-            if (tok.text == "+") st.push(a + b);
-            else if (tok.text == "-") st.push(a - b);
-            else if (tok.text == "*") st.push(a * b);
-            else if (tok.text == "/") {
-                if (b == 0) {
-                    std::cerr << "Error: division by zero\n";
-                    return 0;
+            if (tok.text == "+")
+                res = a + b;
+            else if (tok.text == "-")
+                res = a - b;
+            else if (tok.text == "*")
+                res = a * b;
+            else if (tok.text == "/")
+            {
+                if (b == 0)
+                {
+                    errorMsg = "Division by zero";
+                    return false;
                 }
-                st.push(a / b);
+                res = a / b;
             }
-            else if (tok.text == "^") {
-                st.push(std::pow(a, b));
+            else if (tok.text == "^")
+            {
+                res = std::pow(a, b);
             }
-            else {
-                std::cerr << "Unknown operator: " << tok.text << "\n";
-                return 0;
+            else
+            {
+                errorMsg = "Unknown operator: " + tok.text;
+                return false;
             }
+
+            st.push(res);
         }
-        else {
-            std::cerr << "Invalid token in RPN sequence: " << tok.text << "\n";
-            return 0;
+        else if (tok.type == calc::TokenType::Function)
+        {
+            auto it = funcs.find(tok.text);
+            if (it == funcs.end())
+            {
+                errorMsg = "Unknown function: " + tok.text;
+                return false;
+            }
+
+            auto &desc = it->second;
+            if ((int)st.size() < desc.numArgs)
+            {
+                errorMsg = "Not enough arguments for " + tok.text;
+                return false;
+            }
+
+            double args[4];
+            for (int i = desc.numArgs - 1; i >= 0; --i)
+            {
+                args[i] = st.top();
+                st.pop();
+            }
+
+            double res = 0;
+            PluginError err = desc.ptr(desc.numArgs, args, &res);
+            if (err != PLUGIN_OK)
+            {
+                errorMsg = "Error in function " + tok.text;
+                return false;
+            }
+
+            st.push(res);
         }
     }
 
-    if (st.size() != 1) {
-        std::cerr << "Error: invalid expression\n";
-        return 0;
+    if (st.size() != 1)
+    {
+        errorMsg = "Invalid expression result stack";
+        return false;
     }
 
-    return st.top();
+    result = st.top();
+    return true;
 }

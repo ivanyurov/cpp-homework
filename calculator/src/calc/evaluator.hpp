@@ -1,9 +1,16 @@
 #pragma once
+#include <map>
 #include <vector>
 #include <string>
 #include "parser.hpp"
+#include "plugin_api.h"
 
-class Evaluator {
+class Evaluator
+{
 public:
-    static double Evaluate(const std::vector<Token>& rpn);
+    Evaluator(const std::vector<FunctionDescriptor> &funcs);
+    bool Evaluate(const std::vector<calc::Token> &rpn, double &result, std::string &errorMsg);
+
+private:
+    std::map<std::string, FunctionDescriptor> funcs;
 };
