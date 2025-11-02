@@ -1,0 +1,35 @@
+# --- Бинарные файлы ---
+*.exe
+*.dll
+*.so
+*.dylib
+*.a
+*.lib
+*.obj
+*.o
+*.pdb
+
+# --- Каталоги сборки ---
+/build/
+/bin/
+/out/
+/dist/
+
+# --- CMake кэш ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# --- Visual Studio Code / CLion ---
+.vscode/
+.idea/
+
+# --- Логи и временные файлы ---
+*.log
+*.tmp
+*.bak
+
+# --- Системные файлы ---
+.DS_Store
+Thumbs.db

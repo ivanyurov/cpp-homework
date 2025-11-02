@@ -1,0 +1,8 @@
+add_library(log_plugin SHARED log_plugin.cpp)
+
+target_include_directories(log_plugin PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
+set_target_properties(log_plugin PROPERTIES
+    DEFINE_SYMBOL BUILDING_PLUGIN_DLL
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/plugins
+)
